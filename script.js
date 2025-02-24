@@ -10,6 +10,25 @@ let humidity = document.querySelector("#humidity");
 let longitude = document.querySelector("#longitude");
 let latitude = document.querySelector("#latitude");
 
+function setBackgroundImage() {
+    fetch('https://api.unsplash.com/photos/random?query=nature&client_id=3UGx_rFbWmEpWVdsH6cd0SCJZABiYkFEwRWeAEmobfI')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Unsplash API Response:', data);
+            const imageUrl = data.urls?.full;
+            if (imageUrl) {
+                document.body.style.backgroundImage = `url('${imageUrl}')`;
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundPosition = 'center';
+            } else {
+                console.error('Image URL not found in response:', data);
+            }
+        })
+        .catch(error => console.error('Error fetching image:', error));
+}
+
+window.addEventListener('load', setBackgroundImage);
+
 check.addEventListener("click", () => {
     let key = `bd4ea33ecf905116d12af172e008dbae`;
     let url = `https://api.openweathermap.org/data/2.5/weather?q=${city.value},${country.value}&lang=en&units=metric&appid=${key}`;
@@ -20,7 +39,8 @@ check.addEventListener("click", () => {
         console.log(data);
         weatherCountry.innerText = `${data.name} / ${data.sys.country}`;
         temperature.innerHTML = `${data.main.temp}°<b>C</b>`;
-        document.body.style.backgroundImage ="url('https://source.unsplash.com/1600x900/?" + "')";
+
+        setBackgroundImage();
 
         data.weather.forEach(items => {
             weatherDescription.innerText = items.description;
